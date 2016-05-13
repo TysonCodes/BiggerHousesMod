@@ -55,7 +55,7 @@ public class BiggerHousesMod implements WurmMod, Configurable{
                             }
                             int limit = 5;
                             if (plannedStructure.getSize() > 1) {
-                                limit = plannedStructure.getLimitFor(tilex, tiley);
+                                limit = plannedStructure.getLimitFor(tilex, tiley, performer.isOnSurface(), true);
                             }
                             else {
                                 limit = 5;
