@@ -1,0 +1,52 @@
+<project name="BiggerHousesMod">
+	
+	<property name="serverModName" value="BiggerHousesMod"/>
+	<property file="build.properties"/>
+	
+   <path id="agoServerModLauncher">
+      <fileset dir="lib/common">
+         <include name="javassist.jar"/>
+      </fileset>
+      <fileset dir="lib/server">
+			<include name="modlauncher.jar"/>
+      </fileset>
+      <fileset dir="${wuServerDir}">
+         <include name="server.jar"/>
+         <include name="common.jar"/>
+      </fileset>
+   </path>
+	
+	<target name="buildServer">
+		<delete dir="bin.ant.server"/>
+		<mkdir dir="bin.ant.server"/>
+		<javac srcdir="src" destdir="bin.ant.server" debug="true">
+			<classpath>
+				<path refid="agoServerModLauncher"/>
+			</classpath>
+		</javac>
+		<jar destfile="mods/${serverModName}/${serverModName}.jar">
+			<manifest>
+				<attribute name="Implementation-Version" value="${git.buildnumber}"/>
+			</manifest>
+			<fileset dir="bin.ant.server">
+			</fileset>
+		</jar>
+	</target>
+	
+	<target name="zipServer" depends="buildServer">
+		<zip destfile="dist/${serverModName}.zip">
+			<zipfileset dir="mods" prefix="mods">
+				<include name="${serverModName}.properties"/>
+				<include name="${serverModName}/**"/>
+			</zipfileset>
+		</zip>
+	</target>
+	
+	<target name="installServer" depends="buildServer">
+		<mkdir dir="${wuServerDir}/mods"/>
+		<mkdir dir="${wuServerDir}/mods/${serverModName}"/>
+		<copy todir="${wuServerDir}/mods" file="mods/${serverModName}.properties"/>
+		<copy todir="${wuServerDir}/mods/${serverModName}" file="mods/${serverModName}/${serverModName}.jar"/>
+	</target>
+
+</project>
